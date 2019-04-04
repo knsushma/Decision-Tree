@@ -60,9 +60,9 @@ if __name__ == '__main__':
             print(train.labels[np.argmax(dt_predictions[p_id][row_index])], end=",")
             dt_combined_predictions.append(dt_predictions[p_id][row_index])
         combined_prediction = train.labels[np.argmax(np.sum(np.array(dt_combined_predictions), axis=0))]
-        test_label = test.dataset[row_index, -1].astype(type(combined_prediction))
+        test_label = test.dataset[row_index, -1]
         print("{0},{1}".format(combined_prediction, test_label))
-        if (combined_prediction == test_label):
+        if (combined_prediction == test_label.astype(type(combined_prediction))):
             num_of_corrects +=1
 
     print("\n{0}".format(num_of_corrects/test.shape[0]))
