@@ -45,9 +45,11 @@ if __name__ == '__main__':
     #training_instance_weights.append(normalized_weights)
 
     training_instance_weights = []
-    labels_class = train.dataset[:, -1]
+    train_labels = train.dataset[:, -1]
+    test_labels = test.dataset[:, -1]
     tree_weights = []
     test_dataset_predictions = []
+    test_dataset_predictions_combined = []
     for t in range(Tree):
 
         training_instance_weights.append(normalized_weights)
@@ -56,20 +58,17 @@ if __name__ == '__main__':
         predictions_on_train_dataset = dt_on_train_dataset.predict(train.dataset[:,:-1], prob=False)
         predictions_on_test_dataset = dt_on_train_dataset.predict(test.dataset[:,:-1], prob=False)
 
-        # train_dataset_predictions = []
-        # for i in range(train.shape[0]):
-        #     train_dataset_predictions.append(train.labels[np.argmax(dt_prediction_matrix_train[i])])
-
         test_dataset_predictions.append(predictions_on_test_dataset)
 
-        weighted_error = np.sum((predictions_on_train_dataset != labels_class).astype(int) * normalized_weights)
+        weighted_error = np.sum((predictions_on_train_dataset != train_labels).astype(int) * normalized_weights)
         if np.any(weighted_error >= 1 - (1 / len(train.labels))):
             break
 
         alpha = np.log((1 - weighted_error) / weighted_error) + np.log(len(train.labels) - 1)
+        #test_dataset_predictions_combined.append((predictions_on_test_dataset == test_labels).astype(int) * alpha)
         tree_weights.append(alpha)
 
-        instance_weights = np.nan_to_num(normalized_weights * np.exp(alpha * (predictions_on_train_dataset != labels_class).astype(int)))
+        instance_weights = np.nan_to_num(normalized_weights * np.exp(alpha * (predictions_on_train_dataset != train_labels).astype(int)))
         normalized_weights = instance_weights / np.sum(instance_weights)
 
         print()
