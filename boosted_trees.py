@@ -23,26 +23,25 @@ class DataSet:
 
 if __name__ == '__main__':
 
-    train = DataSet("./Resources/digits_train.json")
-    test = DataSet("./Resources/digits_test.json")
+    # train = DataSet("./Resources/digits_train.json")
+    # test = DataSet("./Resources/digits_test.json")
 
     # train = DataSet("./Resources/heart_train.json")
     # test = DataSet("./Resources/heart_test.json")
-
+    #
     # train = DataSet("./Resources/mushrooms_train.json")
     # test = DataSet("./Resources/mushrooms_test.json")
 
-    # train = DataSet("./Resources/winequality_train.json")
-    # test = DataSet("./Resources/winequality_test.json")
+    train = DataSet("./Resources/winequality_train.json")
+    test = DataSet("./Resources/winequality_test.json")
 
-    Tree = 2
-    max_depth = 3
+    Tree = 5
+    max_depth = 2
     n_instances, n_features = train.shape
 
 
     instance_weights = np.full(n_instances, (1/n_instances))
     normalized_weights = instance_weights / np.sum(instance_weights)
-    #training_instance_weights.append(normalized_weights)
 
     training_instance_weights = []
     train_labels = train.dataset[:, -1]
@@ -55,25 +54,35 @@ if __name__ == '__main__':
         training_instance_weights.append(normalized_weights)
         dt_on_train_dataset = dt.DecisionTree()
         dt_on_train_dataset.fit(train.dataset[:,:-1], train.dataset[:,-1], train.features, max_depth=max_depth, instance_weights=normalized_weights)
-        predictions_on_train_dataset = dt_on_train_dataset.predict(train.dataset[:,:-1], prob=False)
-        predictions_on_test_dataset = dt_on_train_dataset.predict(test.dataset[:,:-1], prob=False)
+        dt_prediction_matrix_train = dt_on_train_dataset.predict(train.dataset[:,:-1], prob=True)
+        dt_prediction_matrix_test = dt_on_train_dataset.predict(test.dataset[:,:-1], prob=True)
 
-        test_dataset_predictions.append(predictions_on_test_dataset)
+        predictions_on_train_dataset = []
+        for i in range(train.shape[0]):
+            predictions_on_train_dataset.append(train.labels[np.argmax(dt_prediction_matrix_train[i])])
+        predictions_on_train_dataset = np.array(predictions_on_train_dataset)
 
         weighted_error = np.sum((predictions_on_train_dataset != train_labels).astype(int) * normalized_weights)
         if np.any(weighted_error >= 1 - (1 / len(train.labels))):
             break
-
         alpha = np.log((1 - weighted_error) / weighted_error) + np.log(len(train.labels) - 1)
-        #test_dataset_predictions_combined.append((predictions_on_test_dataset == test_labels).astype(int) * alpha)
         tree_weights.append(alpha)
-
-        instance_weights = np.nan_to_num(normalized_weights * np.exp(alpha * (predictions_on_train_dataset != train_labels).astype(int)))
+        instance_weights = np.nan_to_num(
+            normalized_weights * np.exp(alpha * (predictions_on_train_dataset != train_labels).astype(int)))
         normalized_weights = instance_weights / np.sum(instance_weights)
 
-        print()
+        predictions_on_test_dataset = []
+        for i in range(test.shape[0]):
+            predictions_on_test_dataset.append(train.labels[np.argmax(dt_prediction_matrix_test[i])])
+        predictions_on_test_dataset = np.array(predictions_on_test_dataset)
+        test_dataset_predictions.append(predictions_on_test_dataset)
+        for i in range(test.shape[0]):
+            dt_prediction_matrix_test[i,train.labels.index(predictions_on_test_dataset[i])] = alpha
+        test_dataset_predictions_combined.append(dt_prediction_matrix_test)
 
-    print(np.array(training_instance_weights).T)
+
+
+
     for weights in np.array(training_instance_weights).T:
         for index in range(len(weights)-1):
             print("{0:.12f}".format(weights[index]), end=",")
@@ -85,11 +94,19 @@ if __name__ == '__main__':
     print("{0:.12f}".format(tree_weights[-1]))
 
     print()
+
+    c = np.average(test_dataset_predictions_combined, axis=0)
+    p = []
+    for i in range(test.shape[0]):
+        p.append(train.labels[np.argmax(c[i])])
+
     num_of_corrects = 0
     for row_index in range(test.shape[0]):
         for p_id in range(len(test_dataset_predictions)):
             print(test_dataset_predictions[p_id][row_index], end=",")
         test_label = test.dataset[row_index, -1]
-        print("{0}".format(test_label))
-        # if (combined_prediction == test_label.astype(type(combined_prediction))):
-        #     num_of_corrects += 1
+        print("{0},{1}".format(p[row_index], test_label))
+        if (p[row_index] == test_label.astype(type(p[row_index]))):
+            num_of_corrects += 1
+
+    print("\n{0:.12f}".format(num_of_corrects / test.shape[0]))

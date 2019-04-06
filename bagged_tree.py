@@ -26,7 +26,7 @@ if __name__ == '__main__':
 
     # train = DataSet("./Resources/digits_train.json")
     # test = DataSet("./Resources/digits_test.json")
-
+    #
     # train = DataSet("./Resources/heart_train.json")
     # test = DataSet("./Resources/heart_test.json")
 
@@ -36,8 +36,8 @@ if __name__ == '__main__':
     train = DataSet("./Resources/winequality_train.json")
     test = DataSet("./Resources/winequality_test.json")
 
-    Tree = 2
-    max_depth = 3
+    Tree = 5
+    max_depth = 2
 
     random_indices = []
     dt_predictions = []
@@ -50,7 +50,9 @@ if __name__ == '__main__':
 
     resampled_dataset_indices = np.array(random_indices).T
     for row in resampled_dataset_indices:
-        print("{0},{1}".format(row[0], row[1]))
+        for i in range(len(row)-1):
+            print(row[i], end=",")
+        print(row[-1])
     print()
 
     num_of_corrects = 0
@@ -65,7 +67,7 @@ if __name__ == '__main__':
         if (combined_prediction == test_label.astype(type(combined_prediction))):
             num_of_corrects +=1
 
-    print("\n{0}".format(num_of_corrects/test.shape[0]))
+    print("\n{0:.12f}".format(num_of_corrects/test.shape[0]))
 
 
 
