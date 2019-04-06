@@ -29,11 +29,11 @@ if __name__ == '__main__':
     # train = DataSet("./Resources/heart_train.json")
     # test = DataSet("./Resources/heart_test.json")
     #
-    # train = DataSet("./Resources/mushrooms_train.json")
-    # test = DataSet("./Resources/mushrooms_test.json")
+    train = DataSet("./Resources/mushrooms_train.json")
+    test = DataSet("./Resources/mushrooms_test.json")
 
-    train = DataSet("./Resources/winequality_train.json")
-    test = DataSet("./Resources/winequality_test.json")
+    # train = DataSet("./Resources/winequality_train.json")
+    # test = DataSet("./Resources/winequality_test.json")
 
     Tree = 5
     max_depth = 2
@@ -77,7 +77,11 @@ if __name__ == '__main__':
         predictions_on_test_dataset = np.array(predictions_on_test_dataset)
         test_dataset_predictions.append(predictions_on_test_dataset)
         for i in range(test.shape[0]):
-            dt_prediction_matrix_test[i,train.labels.index(predictions_on_test_dataset[i])] = alpha
+            dt_prediction_matrix_test[i, train.labels.index(predictions_on_test_dataset[i])] = alpha
+            # if (predictions_on_test_dataset[i] ==  test.dataset[i, -1]):
+            #     dt_prediction_matrix_test[i,train.labels.index(predictions_on_test_dataset[i])] = alpha
+            # else:
+            #     dt_prediction_matrix_test[i, train.labels.index(predictions_on_test_dataset[i])] = 0
         test_dataset_predictions_combined.append(dt_prediction_matrix_test)
 
 
