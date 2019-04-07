@@ -24,19 +24,19 @@ class DataSet:
 if __name__ == '__main__':
     np.random.seed(0)
 
-    # train = DataSet("./Resources/digits_train.json")
-    # test = DataSet("./Resources/digits_test.json")
-    #
+    train = DataSet("./Resources/digits_train.json")
+    test = DataSet("./Resources/digits_test.json")
+
     # train = DataSet("./Resources/heart_train.json")
     # test = DataSet("./Resources/heart_test.json")
 
     # train = DataSet("./Resources/mushrooms_train.json")
     # test = DataSet("./Resources/mushrooms_test.json")
 
-    train = DataSet("./Resources/winequality_train.json")
-    test = DataSet("./Resources/winequality_test.json")
+    # train = DataSet("./Resources/winequality_train.json")
+    # test = DataSet("./Resources/winequality_test.json")
 
-    Tree = 5
+    Tree = 11
     max_depth = 2
 
     random_indices = []
@@ -68,31 +68,3 @@ if __name__ == '__main__':
             num_of_corrects +=1
 
     print("\n{0:.12f}".format(num_of_corrects/test.shape[0]))
-
-
-
-    # random_indices = []
-    # for t in range(1, Tree + 1):
-    #     random_indices.append(np.random.choice(train.shape[0], train.shape[0]))
-    #
-    # resampled_dataset_indices = np.array(random_indices).T
-    # for row in resampled_dataset_indices:
-    #     print("{0},{1}".format(row[0], row[1]))
-    #
-    # train_1 = np.take(train.dataset, resampled_dataset_indices[:, 0].T, axis=0)
-    # train_2 = np.take(train.dataset, resampled_dataset_indices[:, 1].T, axis=0)
-    #
-    # dt_1 = dt.DecisionTree()
-    # dt_1.fit(train_1[:, :-1], train_1[:, -1], train.features, max_depth=max_depth)
-    # predictions_1 = dt_1.predict(test.dataset[:, :-1], prob=True)
-    #
-    # dt_2 = dt.DecisionTree()
-    # dt_2.fit(train_2[:, :-1], train_2[:, -1], train.features, max_depth=max_depth)
-    # predictions_2 = dt_2.predict(test.dataset[:, :-1], prob=True)
-    #
-    # predictions_3 = predictions_1 + predictions_2
-    #
-    # print()
-    #
-    # for i in range(test.shape[0]):
-    #     print("{0},{1},{2},{3}".format(np.argmax(predictions_1[i]), np.argmax(predictions_2[i]), np.argmax(predictions_3[i]), test.dataset[i, -1]))

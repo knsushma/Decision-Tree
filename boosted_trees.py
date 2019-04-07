@@ -23,20 +23,20 @@ class DataSet:
 
 if __name__ == '__main__':
 
-    # train = DataSet("./Resources/digits_train.json")
-    # test = DataSet("./Resources/digits_test.json")
+    train = DataSet("./Resources/digits_train.json")
+    test = DataSet("./Resources/digits_test.json")
 
     # train = DataSet("./Resources/heart_train.json")
     # test = DataSet("./Resources/heart_test.json")
-    #
-    train = DataSet("./Resources/mushrooms_train.json")
-    test = DataSet("./Resources/mushrooms_test.json")
+
+    # train = DataSet("./Resources/mushrooms_train.json")
+    # test = DataSet("./Resources/mushrooms_test.json")
 
     # train = DataSet("./Resources/winequality_train.json")
     # test = DataSet("./Resources/winequality_test.json")
 
-    Tree = 5
-    max_depth = 2
+    Tree = 11
+    max_depth = 5
     n_instances, n_features = train.shape
 
 
@@ -77,13 +77,9 @@ if __name__ == '__main__':
         predictions_on_test_dataset = np.array(predictions_on_test_dataset)
         test_dataset_predictions.append(predictions_on_test_dataset)
         for i in range(test.shape[0]):
+            dt_prediction_matrix_test[i, :] = 0
             dt_prediction_matrix_test[i, train.labels.index(predictions_on_test_dataset[i])] = alpha
-            # if (predictions_on_test_dataset[i] ==  test.dataset[i, -1]):
-            #     dt_prediction_matrix_test[i,train.labels.index(predictions_on_test_dataset[i])] = alpha
-            # else:
-            #     dt_prediction_matrix_test[i, train.labels.index(predictions_on_test_dataset[i])] = 0
         test_dataset_predictions_combined.append(dt_prediction_matrix_test)
-
 
 
 
@@ -99,18 +95,18 @@ if __name__ == '__main__':
 
     print()
 
-    c = np.average(test_dataset_predictions_combined, axis=0)
-    p = []
+    combined_prediction_matrix = np.average(test_dataset_predictions_combined, axis=0)
+    predictions = []
     for i in range(test.shape[0]):
-        p.append(train.labels[np.argmax(c[i])])
+        predictions.append(train.labels[np.argmax(combined_prediction_matrix[i])])
 
     num_of_corrects = 0
     for row_index in range(test.shape[0]):
         for p_id in range(len(test_dataset_predictions)):
             print(test_dataset_predictions[p_id][row_index], end=",")
         test_label = test.dataset[row_index, -1]
-        print("{0},{1}".format(p[row_index], test_label))
-        if (p[row_index] == test_label.astype(type(p[row_index]))):
+        print("{0},{1}".format(predictions[row_index], test_label))
+        if (predictions[row_index] == test_label.astype(type(predictions[row_index]))):
             num_of_corrects += 1
 
     print("\n{0:.12f}".format(num_of_corrects / test.shape[0]))
