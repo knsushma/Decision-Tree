@@ -22,22 +22,9 @@ class DataSet:
             exit(1)
 
 if __name__ == '__main__':
-    #
-    # train = DataSet("./Resources/digits_train.json")
-    # test = DataSet("./Resources/digits_test.json")
 
-    # train = DataSet("./Resources/heart_train.json")
-    # test = DataSet("./Resources/heart_test.json")
-
-    # train = DataSet("./Resources/mushrooms_train.json")
-    # test = DataSet("./Resources/mushrooms_test.json")
-
-    # train = DataSet("./Resources/winequality_train.json")
-    # test = DataSet("./Resources/winequality_test.json")
-
-
-    if (len(sys.argv)<6):
-        print("Please pass 5 arguments. 1) Type of Wrapper on DT (Bagged Tree/Boosted Tree) 2) # of Trees 3) Maximum Depth 4) Training File Path, 5) Testing File path ")
+    if (len(sys.argv)<5):
+        print("Please pass 4 arguments. 1) # of Trees 2) Maximum Depth 3) Training File Path, 4) Testing File path ")
         sys.exit(1)
 
     Tree = int(sys.argv[1])
