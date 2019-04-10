@@ -1,7 +1,7 @@
 import numpy as np
 import json
 import DecisionTree as dt
-
+import sys
 
 class DataSet:
     def __init__(self, input_file):
@@ -22,9 +22,9 @@ class DataSet:
             exit(1)
 
 if __name__ == '__main__':
-
-    train = DataSet("./Resources/digits_train.json")
-    test = DataSet("./Resources/digits_test.json")
+    #
+    # train = DataSet("./Resources/digits_train.json")
+    # test = DataSet("./Resources/digits_test.json")
 
     # train = DataSet("./Resources/heart_train.json")
     # test = DataSet("./Resources/heart_test.json")
@@ -35,8 +35,18 @@ if __name__ == '__main__':
     # train = DataSet("./Resources/winequality_train.json")
     # test = DataSet("./Resources/winequality_test.json")
 
-    Tree = 11
-    max_depth = 5
+
+    if (len(sys.argv)<6):
+        print("Please pass 5 arguments. 1) Type of Wrapper on DT (Bagged Tree/Boosted Tree) 2) # of Trees 3) Maximum Depth 4) Training File Path, 5) Testing File path ")
+        sys.exit(1)
+
+    Tree = int(sys.argv[1])
+    max_depth = int(sys.argv[2])
+    train_file = sys.argv[3]
+    test_file = sys.argv[4]
+    train = DataSet(train_file)
+    test = DataSet(test_file)
+
     n_instances, n_features = train.shape
 
 

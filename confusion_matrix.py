@@ -1,7 +1,7 @@
 import numpy as np
 import json
 import DecisionTree as dt
-
+import sys
 
 class DataSet:
     def __init__(self, input_file):
@@ -103,8 +103,8 @@ class DataSet:
 if __name__ == '__main__':
     np.random.seed(0)
 
-    train = DataSet("./Resources/digits_train.json")
-    test = DataSet("./Resources/digits_test.json")
+    # train = DataSet("./Resources/digits_train.json")
+    # test = DataSet("./Resources/digits_test.json")
 
     # train = DataSet("./Resources/heart_train.json")
     # test = DataSet("./Resources/heart_test.json")
@@ -115,11 +115,22 @@ if __name__ == '__main__':
     # train = DataSet("./Resources/winequality_train.json")
     # test = DataSet("./Resources/winequality_test.json")
 
+    if (len(sys.argv)<6):
+        print("Please pass 5 arguments. 1) Algo Type 2) # of Trees 3) Maximum Depth 4) Training File Path, 5) Testing File path ")
+        sys.exit(1)
+
+    type = sys.argv[1]
+    Tree = int(sys.argv[2])
+    max_depth = int(sys.argv[3])
+    train_file = sys.argv[4]
+    test_file = sys.argv[5]
+    train = DataSet(train_file)
+    test = DataSet(test_file)
+
+
     actual_class = train.get_label_class_indices(test.dataset)
     confusion_matrix = np.zeros((len(train.labels), len(train.labels)), dtype=object)
-    type = "boost"
-    Tree = 5
-    max_depth = 2
+
     if (type == "bag"):
         predicted_class = train.bagged_tree_predictions(Tree, max_depth, test)
         train.print_confusion_matrix(actual_class, predicted_class)
