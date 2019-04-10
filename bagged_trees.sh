@@ -1,1 +1,1 @@
-python bagged_tree.py $1 $2 $3 $4
+python bagged_trees.py $1 $2 $3 $4
